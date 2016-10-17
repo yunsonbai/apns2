@@ -1,0 +1,10 @@
+.pyc
+*.pyc
+*~
+.codeintel
+*.log
+apns2.egg-info
+build
+dist
+PKG-INFO
+setup.cfg
