@@ -86,4 +86,8 @@ class APNsClient(object):
             if resp.status != 200:
                 raw_data = resp.read().decode('utf-8')
                 raw_data = json.loads(raw_data)
-                self.response[token] = raw_data['reason']
+                if self.response.get(raw_data['reason']):
+                    self.response[raw_data['reason']].append(
+                        token)
+                else:
+                    self.response[raw_data['reason']] = [token, ]
