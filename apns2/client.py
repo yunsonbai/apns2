@@ -48,6 +48,9 @@ class APNsClient(object):
             self.server, self.port, ssl_context=self.ssl_context,
             force_proto=self.proto or 'h2')
 
+    def close(self):
+        self.connection.close()
+
     def __send_notification(self, token, json_payload, headers):
         url = '/3/device/{}'.format(token)
         try:
@@ -62,6 +65,7 @@ class APNsClient(object):
     def send_notification_multiple(
             self, token_hexs, notification, topic=None, expiration=None,
             priority=Priority.Immediate):
+        self.response = {}
         tokens_num = len(token_hexs)
         if tokens_num > MAX_STREAM_NUM:
             raise 'max tokens num is 3000'
