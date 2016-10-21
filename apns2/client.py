@@ -91,3 +91,8 @@ class APNsClient(object):
                         token)
                 else:
                     self.response[raw_data['reason']] = [token, ]
+            else:
+                if self.response.get('Success'):
+                    self.response['Success'].append(token)
+                else:
+                    self.response['Success'] = [token, ]

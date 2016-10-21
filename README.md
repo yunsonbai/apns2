@@ -1,7 +1,7 @@
 # apns2 (based on http2)
 ## Overview
 * 应用：iso消息推送
-* 版本：0.2
+* 版本：0.3
 * 主要功能和特点:
 	* 基于http2
     * 支持批量发送
