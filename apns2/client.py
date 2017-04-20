@@ -58,8 +58,11 @@ class APNsClient(object):
                 'POST', url, json_payload, headers)
         except:
             self.__new_connection()
-            stream_id = self.connection.request(
-                'POST', url, json_payload, headers)
+            try:
+                stream_id = self.connection.request(
+                    'POST', url, json_payload, headers)
+            except:
+                stream_id = None
         return stream_id
 
     def send_notification_multiple(
@@ -85,18 +88,25 @@ class APNsClient(object):
         return self.response
 
     def get_response(self, connection, stream_ids):
+        self.response['CallPushUrlFaild'] = []
+        self.response['CallGetResponseUrlFaild'] = []
+        self.response['Success'] = []
+
         for token, stream_id in stream_ids.items():
-            resp = connection.get_response(stream_id)
-            if resp.status != 200:
-                raw_data = resp.read().decode('utf-8')
-                raw_data = json.loads(raw_data)
-                if self.response.get(raw_data['reason']):
-                    self.response[raw_data['reason']].append(
-                        token)
+            if stream_id is None:
+                self.response['CallPushUrlFaild'].append(token)
+                continue
+            try:
+                resp = connection.get_response(stream_id)
+                if resp.status != 200:
+                    raw_data = resp.read().decode('utf-8')
+                    raw_data = json.loads(raw_data)
+                    if self.response.get(raw_data['reason']):
+                        self.response[raw_data['reason']].append(
+                            token)
+                    else:
+                        self.response[raw_data['reason']] = [token, ]
                 else:
-                    self.response[raw_data['reason']] = [token, ]
-            else:
-                if self.response.get('Success'):
                     self.response['Success'].append(token)
-                else:
-                    self.response['Success'] = [token, ]
+            except:
+                self.response['CallGetResponseUrlFaild'].append(token)

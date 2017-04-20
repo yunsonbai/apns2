@@ -13,7 +13,7 @@ def get_packages(package):
 
 setup(
     name="apns2",
-    version="0.3.1",
+    version="0.3.2",
     packages=get_packages('apns2'),
     author="yunsonbai",
     author_email='1942893504@qq.com',
